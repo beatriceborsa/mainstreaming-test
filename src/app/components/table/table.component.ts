@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Content } from 'src/app/model/content.model';
+import { interval, Subscription } from 'rxjs';
 
 
 @Component({
@@ -16,24 +17,32 @@ export class TableComponent implements OnInit {
   progress = 100;
   secondsLeft = 60;
   pages: number[] = [];
+  countdown = 60;
+  intervalSub!: Subscription;
 
-  constructor(private dataService: DataService) {}
+
+
+  constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.dataService.contents$.subscribe(data => {
-      this.data = data;
+    this.dataService.contents$.subscribe((contents: Content[]) => {
+      localStorage.setItem('lastFetch', Date.now().toString()); // salva il momento della chiamata
+      this.data = contents;
       this.applyFilter();
     });
     this.startCountdown();
   }
 
-  applyFilter() {
+  applyFilter(): void {
     this.filteredData = this.data.filter(item =>
       item.title.toLowerCase().includes(this.search.toLowerCase())
     );
+  
     this.pages = Array(Math.ceil(this.filteredData.length / this.itemsPerPage))
       .fill(0)
       .map((_, i) => i);
+  
+    this.currentPage = 0; // torna alla prima pagina dopo ogni filtro
   }
 
   paginatedData(): Content[] {
@@ -46,15 +55,46 @@ export class TableComponent implements OnInit {
     this.applyFilter();
   }
 
-  startCountdown() {
-    const saved = localStorage.getItem('timerStart');
-    const start = saved ? +saved : Date.now();
-    localStorage.setItem('timerStart', start.toString());
+  startCountdown(): void {
+    const lastFetch = localStorage.getItem('lastFetch');
+    const now = Date.now();
 
-    setInterval(() => {
-      const elapsed = Math.floor((Date.now() - start) / 1000);
-      this.progress = 100 - (elapsed % 60) * 100 / 60;
-      this.secondsLeft = 60 - (elapsed % 60);
-    }, 1000);
+    // Se c'è un timestamp salvato, calcola quanti secondi mancano
+    if (lastFetch) {
+      const elapsed = Math.floor((now - parseInt(lastFetch, 10)) / 1000);
+      this.countdown = 60 - elapsed;
+
+      // Evita countdown negativi
+      if (this.countdown <= 0) {
+        this.countdown = 60;
+      }
+    }
+
+    // Aggiorna ogni secondo
+    this.intervalSub = interval(1000).subscribe(() => {
+      this.countdown--;
+
+      if (this.countdown <= 0) {
+        this.countdown = 60;
+        localStorage.setItem('lastFetch', Date.now().toString());
+      }
+    });
   }
+
+  setPage(index: number): void {
+    this.currentPage = index;
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.pages.length - 1) {
+      this.currentPage++;
+    }
+  }
+  
+  prevPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+    }
+  }
+
 }

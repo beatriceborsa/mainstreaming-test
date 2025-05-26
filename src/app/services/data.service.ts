@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { interval, startWith, switchMap, shareReplay } from 'rxjs';
+import { interval, startWith, switchMap, shareReplay, map } from 'rxjs';
 import { Content } from '../model/content.model';
 
 
@@ -8,11 +8,15 @@ import { Content } from '../model/content.model';
   providedIn: 'root'
 })
 export class DataService {
-  private url = 'https://firebasestorage.googleapis.com/v0/b/testmainstreaming.appspot.com/o/library.json?alt=media&token=6fe008b7-5bab-4acd-bee1-a306649dc74f';
+  private apiUrl = 'assets/library.json';
 
   public contents$ = interval(60000).pipe(
     startWith(0),
-    switchMap(() => this.http.get<Content[]>(this.url)),
+    switchMap(() =>
+      this.http.get<any>(this.apiUrl).pipe(
+        map(response => response?.data?.contents || [])
+      )
+    ),
     shareReplay(1)
   );
 

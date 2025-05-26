@@ -1,42 +1,85 @@
 <div class="p-4">
-    <div class="mb-4 flex gap-2">
-      <input [(ngModel)]="search" placeholder="Search title..." class="border px-2 py-1 rounded w-full" />
-      <button (click)="onSearch()" class="bg-blue-500 text-white px-4 py-1 rounded">Search</button>
-    </div>
+  <div class="flex flex-col sm:flex-row gap-2 w-full mt-4">
+    <input
+      type="text"
+      [(ngModel)]="search"
+      placeholder="Cerca per titolo..."
+      class="flex-1 px-4 py-2 border border-gray-300 rounded w-full"
+    />
   
-    <div class="h-2 bg-gray-200 rounded mb-2">
-      <div [style.width.%]="progress" class="bg-blue-500 h-2 rounded transition-all duration-300"></div>
+    <button
+      (click)="applyFilter()"
+      class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+    >
+      Cerca
+    </button>
+  </div>
+
+  <div class="w-full bg-gray-200 rounded h-2 mt-4 overflow-hidden">
+    <div class="bg-blue-500 h-2 transition-all duration-100" [style.width.%]="((60 - countdown) / 60) * 100">
     </div>
-    <p class="text-sm text-gray-600 mb-4">Refreshing in {{ secondsLeft }}s</p>
-  
-    <div class="overflow-x-auto">
-      <table class="min-w-full table-auto border-collapse">
-        <thead class="bg-gray-100 hidden sm:table-header-group">
-          <tr>
-            <th class="text-left p-2">Title</th>
-            <th class="text-left p-2">Type</th>
-            <th class="text-left p-2">ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of paginatedData()" class="border-t">
-            <td class="p-2">
-              <span class="hidden sm:inline">{{ item.title }}</span>
-              <span class="sm:hidden">{{ item.contentType }} - {{ item.title | slice:0:10 }}...</span>
-            </td>
-            <td class="p-2 hidden sm:table-cell">{{ item.contentType }}</td>
-            <td class="p-2 hidden sm:table-cell">{{ item.contentID }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="mt-4 flex justify-center gap-2">
+  </div>
+  <p class="text-sm text-gray-600 mt-1">Prossimo aggiornamento tra {{ countdown }} secondi</p>
+  <div class="overflow-x-auto mt-6">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+        <tr>
+          <th class="px-4 py-2 text-left">Title</th>
+          <th class="px-4 py-2 text-left">Type</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">Content ID</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">Other Fields</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        <tr *ngFor="let item of paginatedData()" class="hover:bg-gray-50">
+          <!-- Title -->
+          <td class="px-4 py-2 font-medium max-w-[160px] truncate">
+            [{{ item.contentType }}] {{ item.title }}
+          </td>
+
+          <!-- Content type -->
+          <td class="px-4 py-2 capitalize">
+            {{ item.contentType }}
+          </td>
+
+          <!-- Content ID (desktop only) -->
+          <td class="px-4 py-2 hidden md:table-cell">
+            {{ item.contentID }}
+          </td>
+
+          <!-- Other fields (desktop only, optional) -->
+          <td class="px-4 py-2 hidden md:table-cell">
+            {{ item['duration'] || '—' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!--    <div class="mt-4 flex justify-center gap-2">
       <button *ngFor="let page of pages" (click)="currentPage = page"
         [class.bg-blue-500]="currentPage === page"
         [class.text-white]="currentPage === page"
         class="px-3 py-1 rounded border border-gray-300 hover:bg-blue-100">
         {{ page + 1 }}
       </button>
-    </div>
-  </div>
+    </div> -->
+</div>
+
+<div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
+  <button (click)="prevPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" [disabled]="currentPage === 0">
+    ←
+  </button>
+
+  <ng-container *ngFor="let page of pages; let i = index">
+    <button (click)="setPage(i)" [class.bg-blue-500]="i === currentPage" [class.text-white]="i === currentPage"
+      class="px-3 py-1 rounded hover:bg-blue-100 bg-gray-100">
+      {{ i + 1 }}
+    </button>
+  </ng-container>
+
+  <button (click)="nextPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+    [disabled]="currentPage === pages.length - 1">
+    →
+  </button>
+</div>
