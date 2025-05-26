@@ -26,15 +26,19 @@
         <tr>
           <th class="px-4 py-2 text-left">Title</th>
           <th class="px-4 py-2 text-left">Type</th>
-          <th class="px-4 py-2 text-left hidden md:table-cell">Content ID</th>
-          <th class="px-4 py-2 text-left hidden md:table-cell">Other Fields</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">CONTENT ID</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">DURATION</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">FILENAME</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">CREATION DATE</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">UPDATE DATE</th>
+          <th class="px-4 py-2 text-left hidden md:table-cell">PUBLISH DATE UTC</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-100">
         <tr *ngFor="let item of paginatedData()" class="hover:bg-gray-50">
           <!-- Title -->
           <td class="px-4 py-2 font-medium max-w-[160px] truncate">
-            [{{ item.contentType }}] {{ item.title }}
+          {{ item.title }}
           </td>
 
           <!-- Content type -->
@@ -44,12 +48,24 @@
 
           <!-- Content ID (desktop only) -->
           <td class="px-4 py-2 hidden md:table-cell">
-            {{ item.contentID }}
+            {{ item['contentId'] }}
           </td>
 
           <!-- Other fields (desktop only, optional) -->
           <td class="px-4 py-2 hidden md:table-cell">
-            {{ item['duration'] || '—' }}
+            {{ item['onDemandDuration'] || '—' }}
+          </td>
+          <td class="px-4 py-2 hidden md:table-cell">
+            {{ item['onDemandFileName'] || '—' }}
+          </td>
+          <td class="px-4 py-2 hidden md:table-cell">
+            {{ item['creationDate'] | date:'short' }}
+          </td>
+          <td class="px-4 py-2 hidden md:table-cell">
+            {{ item['updateDate'] | date:'short' }}
+          </td>
+          <td class="px-4 py-2 hidden md:table-cell">
+            {{ item['publishDateUTC'] | date:'short' }}
           </td>
         </tr>
       </tbody>
