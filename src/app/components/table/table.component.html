@@ -1,0 +1,42 @@
+<div class="p-4">
+    <div class="mb-4 flex gap-2">
+      <input [(ngModel)]="search" placeholder="Search title..." class="border px-2 py-1 rounded w-full" />
+      <button (click)="onSearch()" class="bg-blue-500 text-white px-4 py-1 rounded">Search</button>
+    </div>
+  
+    <div class="h-2 bg-gray-200 rounded mb-2">
+      <div [style.width.%]="progress" class="bg-blue-500 h-2 rounded transition-all duration-300"></div>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Refreshing in {{ secondsLeft }}s</p>
+  
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto border-collapse">
+        <thead class="bg-gray-100 hidden sm:table-header-group">
+          <tr>
+            <th class="text-left p-2">Title</th>
+            <th class="text-left p-2">Type</th>
+            <th class="text-left p-2">ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of paginatedData()" class="border-t">
+            <td class="p-2">
+              <span class="hidden sm:inline">{{ item.title }}</span>
+              <span class="sm:hidden">{{ item.contentType }} - {{ item.title | slice:0:10 }}...</span>
+            </td>
+            <td class="p-2 hidden sm:table-cell">{{ item.contentType }}</td>
+            <td class="p-2 hidden sm:table-cell">{{ item.contentID }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="mt-4 flex justify-center gap-2">
+      <button *ngFor="let page of pages" (click)="currentPage = page"
+        [class.bg-blue-500]="currentPage === page"
+        [class.text-white]="currentPage === page"
+        class="px-3 py-1 rounded border border-gray-300 hover:bg-blue-100">
+        {{ page + 1 }}
+      </button>
+    </div>
+  </div>
