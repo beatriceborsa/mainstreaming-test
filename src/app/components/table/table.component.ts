@@ -63,7 +63,6 @@ export class TableComponent implements OnInit {
       }
     }
 
-    // Aggiorno ogni secondo
     this.intervalSub = interval(1000).subscribe(() => {
       this.countdown--;
 
