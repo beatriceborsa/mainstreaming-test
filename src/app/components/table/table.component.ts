@@ -28,12 +28,12 @@ export class TableComponent implements OnInit {
     this.dataService.contents$.subscribe((contents: Content[]) => {
       localStorage.setItem('lastFetch', Date.now().toString());
       this.data = contents;
-      this.applyFilter();
+      this.filter();
     });
     this.startCountdown();
   }
 
-  applyFilter(): void {
+  filter(): void {
     this.filteredData = this.data.filter(item =>
       item.title.toLowerCase().includes(this.search.toLowerCase())
     );

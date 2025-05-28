@@ -3,7 +3,7 @@
     <input type="text" [(ngModel)]="search" placeholder="Cerca per titolo..."
       class="flex-1 px-4 py-2 border border-gray-300 rounded w-full" />
 
-    <button (click)="applyFilter()" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+    <button (click)="filter()" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
       Cerca
     </button>
   </div>
@@ -12,13 +12,13 @@
     <div class="bg-blue-500 h-2 transition-all duration-100" [style.width.%]="((60 - countdown) / 60) * 100">
     </div>
   </div>
-  <p class="text-sm text-gray-600 mt-1">Prossimo aggiornamento tra {{ countdown }} secondi</p>
+  <p class="text-sm text-gray-600 mt-1">Prossimo aggiornamento sarà tra {{ countdown }} secondi</p>
   <div class="overflow-x-auto mt-6">
     <table class="min-w-full divide-y divide-gray-200 text-sm">
       <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
         <tr>
-          <th class="px-4 py-2 text-left">Title</th>
-          <th class="px-4 py-2 text-left">Type</th>
+          <th class="px-4 py-2 text-left">TITLE</th>
+          <th class="px-4 py-2 text-left">TYPE</th>
           <th class="px-4 py-2 text-left hidden md:table-cell">CONTENT ID</th>
           <th class="px-4 py-2 text-left hidden md:table-cell">DURATION</th>
           <th class="px-4 py-2 text-left hidden md:table-cell">FILENAME</th>
