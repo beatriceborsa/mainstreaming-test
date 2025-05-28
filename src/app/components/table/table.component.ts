@@ -11,8 +11,8 @@ import { interval, Subscription } from 'rxjs';
 export class TableComponent implements OnInit {
   data: Content[] = [];
   filteredData: Content[] = [];
-  currentPage = 0;
-  itemsPerPage = 10;
+  currentPage: number = 0;
+  itemsPerPage: number = 10;
   search: string = '';
   progress = 100;
   secondsLeft = 60;
@@ -26,7 +26,7 @@ export class TableComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.contents$.subscribe((contents: Content[]) => {
-      localStorage.setItem('lastFetch', Date.now().toString()); // salva il momento della chiamata
+      localStorage.setItem('lastFetch', Date.now().toString());
       this.data = contents;
       this.applyFilter();
     });
@@ -37,12 +37,12 @@ export class TableComponent implements OnInit {
     this.filteredData = this.data.filter(item =>
       item.title.toLowerCase().includes(this.search.toLowerCase())
     );
-  
+
     this.pages = Array(Math.ceil(this.filteredData.length / this.itemsPerPage))
       .fill(0)
       .map((_, i) => i);
-  
-    this.currentPage = 0; // torna alla prima pagina dopo ogni filtro
+
+    this.currentPage = 0;
   }
 
   paginatedData(): Content[] {
@@ -50,27 +50,20 @@ export class TableComponent implements OnInit {
     return this.filteredData.slice(start, start + this.itemsPerPage);
   }
 
-  onSearch() {
-    this.currentPage = 0;
-    this.applyFilter();
-  }
-
   startCountdown(): void {
     const lastFetch = localStorage.getItem('lastFetch');
     const now = Date.now();
 
-    // Se c'è un timestamp salvato, calcola quanti secondi mancano
     if (lastFetch) {
       const elapsed = Math.floor((now - parseInt(lastFetch, 10)) / 1000);
       this.countdown = 60 - elapsed;
 
-      // Evita countdown negativi
       if (this.countdown <= 0) {
         this.countdown = 60;
       }
     }
 
-    // Aggiorna ogni secondo
+    // Aggiorno ogni secondo
     this.intervalSub = interval(1000).subscribe(() => {
       this.countdown--;
 
@@ -84,13 +77,13 @@ export class TableComponent implements OnInit {
   setPage(index: number): void {
     this.currentPage = index;
   }
-  
+
   nextPage(): void {
     if (this.currentPage < this.pages.length - 1) {
       this.currentPage++;
     }
   }
-  
+
   prevPage(): void {
     if (this.currentPage > 0) {
       this.currentPage--;

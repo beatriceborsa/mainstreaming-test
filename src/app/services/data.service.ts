@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { interval, startWith, switchMap, shareReplay, map } from 'rxjs';
-import { Content } from '../model/content.model';
 
 
 @Injectable({

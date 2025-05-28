@@ -1,16 +1,9 @@
 <div class="p-4">
   <div class="flex flex-col sm:flex-row gap-2 w-full mt-4">
-    <input
-      type="text"
-      [(ngModel)]="search"
-      placeholder="Cerca per titolo..."
-      class="flex-1 px-4 py-2 border border-gray-300 rounded w-full"
-    />
-  
-    <button
-      (click)="applyFilter()"
-      class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-    >
+    <input type="text" [(ngModel)]="search" placeholder="Cerca per titolo..."
+      class="flex-1 px-4 py-2 border border-gray-300 rounded w-full" />
+
+    <button (click)="applyFilter()" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
       Cerca
     </button>
   </div>
@@ -36,22 +29,27 @@
       </thead>
       <tbody class="bg-white divide-y divide-gray-100">
         <tr *ngFor="let item of paginatedData()" class="hover:bg-gray-50">
-          <!-- Title -->
-          <td class="px-4 py-2 font-medium max-w-[160px] truncate">
-          {{ item.title }}
+   
+          <td class="px-4 py-2 font-medium block md:hidden max-w-[160px] truncate">
+            [{{ item.contentType }}] {{ item.title.length > 12 ? (item.title | slice:0:12) + '...' : item.title }}
           </td>
 
-          <!-- Content type -->
+        
+          <td class="px-4 py-2 font-medium hidden md:table-cell">
+            {{ item.title }}
+          </td>
+
+
           <td class="px-4 py-2 capitalize">
             {{ item.contentType }}
           </td>
 
-          <!-- Content ID (desktop only) -->
+
           <td class="px-4 py-2 hidden md:table-cell">
             {{ item['contentId'] }}
           </td>
 
-          <!-- Other fields (desktop only, optional) -->
+
           <td class="px-4 py-2 hidden md:table-cell">
             {{ item['onDemandDuration'] || '—' }}
           </td>
@@ -72,14 +70,6 @@
     </table>
   </div>
 
-  <!--    <div class="mt-4 flex justify-center gap-2">
-      <button *ngFor="let page of pages" (click)="currentPage = page"
-        [class.bg-blue-500]="currentPage === page"
-        [class.text-white]="currentPage === page"
-        class="px-3 py-1 rounded border border-gray-300 hover:bg-blue-100">
-        {{ page + 1 }}
-      </button>
-    </div> -->
 </div>
 
 <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
