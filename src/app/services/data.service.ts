@@ -32,7 +32,6 @@ export class DataService {
           })
         )
       ),
-      startWith(null), 
       shareReplay(1)
     );
   });
