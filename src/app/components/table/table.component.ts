@@ -25,11 +25,19 @@ export class TableComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.dataService.contents$.subscribe((contents: Content[]) => {
-      localStorage.setItem('lastFetch', Date.now().toString());
-      this.data = contents;
+    const cached = localStorage.getItem('cachedData');
+    if (cached) {
+      this.data = JSON.parse(cached);
       this.filter();
+    }
+  
+    this.dataService.contents$.subscribe((contents: Content[] | null) => {
+      if (contents) {
+        this.data = contents;
+        this.filter();
+      }
     });
+  
     this.startCountdown();
   }
 
@@ -68,9 +76,10 @@ export class TableComponent implements OnInit {
 
       if (this.countdown <= 0) {
         this.countdown = 60;
-        localStorage.setItem('lastFetch', Date.now().toString());
+        console.log('[COUNTDOWN RESET] riparte da 60s');
       }
     });
+
   }
 
   setPage(index: number): void {

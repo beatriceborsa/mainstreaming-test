@@ -1,23 +1,41 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { interval, startWith, switchMap, shareReplay, map } from 'rxjs';
+import { defer, timer, switchMap, map, tap, catchError, shareReplay, of, startWith } from 'rxjs';
 
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DataService {
   private apiUrl = 'assets/library.json';
 
-  public contents$ = interval(60000).pipe(
-    startWith(0),
-    switchMap(() =>
-      this.http.get<any>(this.apiUrl).pipe(
-        map(response => response?.data?.contents || [])
-      )
-    ),
-    shareReplay(1)
-  );
+  public contents$ = defer(() => {
+
+    const lastFetch = parseInt(localStorage.getItem('lastFetch') || '0', 10);
+    const now = Date.now();
+    const elapsed = now - lastFetch;
+
+
+    const delay = lastFetch ? Math.max(60000 - elapsed, 0) : 0;
+
+    return timer(delay, 60000).pipe(
+      switchMap(() =>
+        this.http.get<any>(this.apiUrl).pipe(
+          map(res => res?.data?.contents || []),
+          tap(contents => {
+
+            localStorage.setItem('lastFetch', Date.now().toString());
+
+            localStorage.setItem('cachedData', JSON.stringify(contents));
+            console.log('[FETCH] Triggered at', new Date().toLocaleTimeString());
+          }),
+          catchError(err => {
+            console.error('Errore nella fetch:', err);
+            return of([]);
+          })
+        )
+      ),
+      startWith(null), 
+      shareReplay(1)
+    );
+  });
 
   constructor(private http: HttpClient) {}
 }
