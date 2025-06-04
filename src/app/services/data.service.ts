@@ -24,7 +24,7 @@ export class DataService {
             localStorage.setItem('lastFetch', Date.now().toString());
 
             localStorage.setItem('cachedData', JSON.stringify(contents));
-            console.log('[FETCH] Triggered at', new Date().toLocaleTimeString());
+            console.log('[FETCH] ultima fetch', new Date().toLocaleTimeString());
           }),
           catchError(err => {
             console.error('Errore nella fetch:', err);
