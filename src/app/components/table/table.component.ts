@@ -76,7 +76,6 @@ export class TableComponent implements OnInit {
 
       if (this.countdown <= 0) {
         this.countdown = 60;
-        console.log('[COUNTDOWN RESET] riparte da 60s');
       }
     });
 
